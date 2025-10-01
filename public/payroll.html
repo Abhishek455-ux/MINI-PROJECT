@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payroll Management - Smart Attendance System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="components/header.css">
+    <link rel="stylesheet" href="components/footer.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --bg: #0f172a;
+            --bg-light: #1e293b;
+            --bg-card: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-light: #cbd5e1;
+            --border: #334155;
+            --shadow: rgba(0, 0, 0, 0.25);
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+            animation: backgroundShift 20s ease-in-out infinite;
+            z-index: -1;
+        }
+        
+        @keyframes backgroundShift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        /* Header Section */
+        .header-section {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .header-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 50px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--primary);
+            margin-bottom: 24px;
+        }
+        
+        .header-title {
+            font-size: 48px;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--text), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header-subtitle {
+            font-size: 18px;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary);
+        }
+        
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .card-large {
+            grid-column: span 8;
+        }
+        
+        .card-small {
+            grid-column: span 4;
+        }
+        
+        .card-full {
+            grid-column: span 12;
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+        
+        .card-action {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .card-action:hover {
+            color: var(--accent);
+        }
+        
+        /* Payroll Summary */
+        .payroll-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .summary-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .summary-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+        }
+        
+        .summary-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        
+        .summary-label {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        
+        .summary-trend {
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        
+        .summary-trend.positive {
+            color: var(--success);
+        }
+        
+        .summary-trend.negative {
+            color: var(--error);
+        }
+        
+        /* Payroll Table */
+        .payroll-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+        
+        .payroll-table th,
+        .payroll-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .payroll-table th {
+            background: rgba(15, 23, 42, 0.6);
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .payroll-table td {
+            color: var(--text);
+            font-size: 14px;
+        }
+        
+        .payroll-table tr:hover {
+            background: rgba(99, 102, 241, 0.05);
+        }
+        
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .status-paid {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .status-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        .status-processing {
+            background: rgba(6, 182, 212, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+        }
+        
+        /* Employee Cards */
+        .employee-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .employee-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .employee-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.3);
+            border-color: var(--primary);
+        }
+        
+        .employee-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .employee-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 20px;
+        }
+        
+        .employee-info h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+        
+        .employee-info p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        
+        .employee-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 12px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .employee-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+        }
+        
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+        }
+        
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .filter-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .filter-select {
+            padding: 8px 12px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-size: 14px;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        /* Charts */
+        .chart-container {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 16px;
+        }
+        
+        .chart-placeholder {
+            height: 200px;
+            background: rgba(15, 23, 42, 0.3);
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .card-large {
+                grid-column: span 12;
+            }
+            
+            .card-small {
+                grid-column: span 6;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-title {
+                font-size: 36px;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .card-large,
+            .card-small {
+                grid-column: span 1;
+            }
+            
+            .payroll-summary {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .employee-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 16px;
+            }
+            
+            .payroll-summary {
+                grid-template-columns: 1fr;
+            }
+            
+            .employee-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header will be added by header.js -->
+    
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="header-badge">
+                <i class="fas fa-money-bill-wave"></i>
+                Payroll Management
+            </div>
+            <h1 class="header-title">Payroll Dashboard</h1>
+            <p class="header-subtitle">
+                Manage employee payroll, track attendance-based payments, and generate comprehensive reports
+            </p>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Payroll Summary Card -->
+            <div class="card card-large">
+                <div class="card-header">
+                    <div class="card-title">
+                        <div class="card-icon">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                        Payroll Summary
+                    </div>
+                    <a href="#" class="card-action">View Details</a>
+                </div>
+                <div class="payroll-summary">
+                    <div class="summary-card">
+                        <div class="summary-value">₹2,45,000</div>
+                        <div class="summary-label">Total Payroll</div>
+                        <div class="summary-trend positive">+5.2% from last month</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value">₹1,85,000</div>
+                        <div class="summary-label">Paid</div>
+                        <div class="summary-trend positive">75% completed</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value">₹60,000</div>
+                        <div class="summary-label">Pending</div>
+                        <div class="summary-trend negative">25% remaining</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-value">45</div>
+                        <div class="summary-label">Employees</div>
+                        <div class="summary-trend positive">+2 new hires</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions Card -->
+            <div class="card card-small">
+                <div class="card-header">
+                    <div class="card-title">
+                        <div class="card-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        Quick Actions
+                    </div>
+                </div>
+                <div class="quick-actions">
+                    <button class="btn btn-primary" onclick="processPayroll()">
+                        <i class="fas fa-play"></i>
+                        Process Payroll
+                    </button>
+                    <button class="btn btn-outline" onclick="generateReport()">
+                        <i class="fas fa-file-export"></i>
+                        Generate Report
+                    </button>
+                    <button class="btn btn-outline" onclick="addEmployee()">
+                        <i class="fas fa-user-plus"></i>
+                        Add Employee
+                    </button>
+                    <button class="btn btn-outline" onclick="viewSettings()">
+                        <i class="fas fa-cog"></i>
+                        Settings
+                    </button>
+                </div>
+            </div>
+
+            <!-- Payroll Table Card -->
+            <div class="card card-full">
+                <div class="card-header">
+                    <div class="card-title">
+                        <div class="card-icon">
+                            <i class="fas fa-table"></i>
+                        </div>
+                        Employee Payroll
+                    </div>
+                    <a href="#" class="card-action">Export All</a>
+                </div>
+                
+                <div class="filters">
+                    <div class="filter-group">
+                        <label class="filter-label">Department</label>
+                        <select class="filter-select" onchange="filterByDepartment(this.value)">
+                            <option value="">All Departments</option>
+                            <option value="engineering">Engineering</option>
+                            <option value="marketing">Marketing</option>
+                            <option value="sales">Sales</option>
+                            <option value="hr">Human Resources</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Status</label>
+                        <select class="filter-select" onchange="filterByStatus(this.value)">
+                            <option value="">All Status</option>
+                            <option value="paid">Paid</option>
+                            <option value="pending">Pending</option>
+                            <option value="processing">Processing</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Month</label>
+                        <select class="filter-select" onchange="filterByMonth(this.value)">
+                            <option value="2025-01">January 2025</option>
+                            <option value="2024-12">December 2024</option>
+                            <option value="2024-11">November 2024</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <table class="payroll-table">
+                    <thead>
+                        <tr>
+                            <th>Employee</th>
+                            <th>Department</th>
+                            <th>Basic Salary</th>
+                            <th>Overtime</th>
+                            <th>Deductions</th>
+                            <th>Net Pay</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <div class="employee-avatar">JD</div>
+                                    <div>
+                                        <div style="font-weight: 600;">John Doe</div>
+                                        <div style="font-size: 12px; color: var(--text-muted);">ID: EMP001</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>Engineering</td>
+                            <td>₹45,000</td>
+                            <td>₹5,000</td>
+                            <td>₹2,000</td>
+                            <td>₹48,000</td>
+                            <td><span class="status-badge status-paid">Paid</span></td>
+                            <td>
+                                <button class="btn btn-outline" onclick="viewDetails('EMP001')">View</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <div class="employee-avatar">JS</div>
+                                    <div>
+                                        <div style="font-weight: 600;">Jane Smith</div>
+                                        <div style="font-size: 12px; color: var(--text-muted);">ID: EMP002</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>Marketing</td>
+                            <td>₹35,000</td>
+                            <td>₹2,500</td>
+                            <td>₹1,500</td>
+                            <td>₹36,000</td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                            <td>
+                                <button class="btn btn-outline" onclick="viewDetails('EMP002')">View</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <div class="employee-avatar">AK</div>
+                                    <div>
+                                        <div style="font-weight: 600;">Ali Khan</div>
+                                        <div style="font-size: 12px; color: var(--text-muted);">ID: EMP003</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>Sales</td>
+                            <td>₹40,000</td>
+                            <td>₹3,000</td>
+                            <td>₹1,800</td>
+                            <td>₹41,200</td>
+                            <td><span class="status-badge status-processing">Processing</span></td>
+                            <td>
+                                <button class="btn btn-outline" onclick="viewDetails('EMP003')">View</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <div class="employee-avatar">SW</div>
+                                    <div>
+                                        <div style="font-weight: 600;">Sarah Wilson</div>
+                                        <div style="font-size: 12px; color: var(--text-muted);">ID: EMP004</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>HR</td>
+                            <td>₹38,000</td>
+                            <td>₹1,500</td>
+                            <td>₹1,200</td>
+                            <td>₹38,300</td>
+                            <td><span class="status-badge status-paid">Paid</span></td>
+                            <td>
+                                <button class="btn btn-outline" onclick="viewDetails('EMP004')">View</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <div class="employee-avatar">MJ</div>
+                                    <div>
+                                        <div style="font-weight: 600;">Mike Johnson</div>
+                                        <div style="font-size: 12px; color: var(--text-muted);">ID: EMP005</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>Engineering</td>
+                            <td>₹50,000</td>
+                            <td>₹4,000</td>
+                            <td>₹2,500</td>
+                            <td>₹51,500</td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                            <td>
+                                <button class="btn btn-outline" onclick="viewDetails('EMP005')">View</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Employee Cards -->
+            <div class="card card-full">
+                <div class="card-header">
+                    <div class="card-title">
+                        <div class="card-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        Employee Overview
+                    </div>
+                </div>
+                <div class="employee-cards">
+                    <div class="employee-card">
+                        <div class="employee-header">
+                            <div class="employee-avatar">JD</div>
+                            <div class="employee-info">
+                                <h3>John Doe</h3>
+                                <p>Senior Developer • Engineering</p>
+                            </div>
+                        </div>
+                        <div class="employee-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">₹48,000</div>
+                                <div class="stat-label">Net Pay</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">176h</div>
+                                <div class="stat-label">Hours Worked</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">22</div>
+                                <div class="stat-label">Days Present</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">95%</div>
+                                <div class="stat-label">Attendance</div>
+                            </div>
+                        </div>
+                        <div class="employee-actions">
+                            <button class="btn btn-primary" onclick="processPayment('EMP001')">
+                                <i class="fas fa-money-bill"></i>
+                                Process Payment
+                            </button>
+                            <button class="btn btn-outline" onclick="viewDetails('EMP001')">
+                                <i class="fas fa-eye"></i>
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="employee-card">
+                        <div class="employee-header">
+                            <div class="employee-avatar">JS</div>
+                            <div class="employee-info">
+                                <h3>Jane Smith</h3>
+                                <p>Marketing Manager • Marketing</p>
+                            </div>
+                        </div>
+                        <div class="employee-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">₹36,000</div>
+                                <div class="stat-label">Net Pay</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">168h</div>
+                                <div class="stat-label">Hours Worked</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">21</div>
+                                <div class="stat-label">Days Present</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">91%</div>
+                                <div class="stat-label">Attendance</div>
+                            </div>
+                        </div>
+                        <div class="employee-actions">
+                            <button class="btn btn-primary" onclick="processPayment('EMP002')">
+                                <i class="fas fa-money-bill"></i>
+                                Process Payment
+                            </button>
+                            <button class="btn btn-outline" onclick="viewDetails('EMP002')">
+                                <i class="fas fa-eye"></i>
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="employee-card">
+                        <div class="employee-header">
+                            <div class="employee-avatar">AK</div>
+                            <div class="employee-info">
+                                <h3>Ali Khan</h3>
+                                <p>Sales Executive • Sales</p>
+                            </div>
+                        </div>
+                        <div class="employee-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">₹41,200</div>
+                                <div class="stat-label">Net Pay</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">172h</div>
+                                <div class="stat-label">Hours Worked</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">20</div>
+                                <div class="stat-label">Days Present</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">87%</div>
+                                <div class="stat-label">Attendance</div>
+                            </div>
+                        </div>
+                        <div class="employee-actions">
+                            <button class="btn btn-primary" onclick="processPayment('EMP003')">
+                                <i class="fas fa-money-bill"></i>
+                                Process Payment
+                            </button>
+                            <button class="btn btn-outline" onclick="viewDetails('EMP003')">
+                                <i class="fas fa-eye"></i>
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Card -->
+            <div class="card card-large">
+                <div class="card-header">
+                    <div class="card-title">
+                        <div class="card-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        Payroll Analytics
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">Monthly Payroll Trend</div>
+                    <div class="chart-placeholder">
+                        <i class="fas fa-chart-area" style="font-size: 48px; margin-right: 12px;"></i>
+                        Chart visualization would be implemented here
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-title">Department-wise Payroll Distribution</div>
+                    <div class="chart-placeholder">
+                        <i class="fas fa-chart-pie" style="font-size: 48px; margin-right: 12px;"></i>
+                        Pie chart visualization would be implemented here
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Card -->
+            <div class="card card-small">
+                <div class="card-header">
+                    <div class="card-title">
+                        <div class="card-icon">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        Payroll Settings
+                    </div>
+                </div>
+                <div class="settings-list">
+                    <div class="setting-item">
+                        <h4>Pay Period</h4>
+                        <p>Monthly (1st - 31st)</p>
+                    </div>
+                    <div class="setting-item">
+                        <h4>Payment Method</h4>
+                        <p>Bank Transfer</p>
+                    </div>
+                    <div class="setting-item">
+                        <h4>Overtime Rate</h4>
+                        <p>1.5x Basic Rate</p>
+                    </div>
+                    <div class="setting-item">
+                        <h4>Deductions</h4>
+                        <p>Tax, PF, Insurance</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer will be added by footer.js -->
+    
+    <script src="components/header.js"></script>
+    <script src="components/footer.js"></script>
+    <script>
+        // Payroll functions
+        function processPayroll() {
+            showNotification('Processing payroll for all employees...', 'info');
+            setTimeout(() => {
+                showNotification('Payroll processed successfully!', 'success');
+            }, 3000);
+        }
+        
+        function generateReport() {
+            showNotification('Generating payroll report...', 'info');
+            setTimeout(() => {
+                showNotification('Report generated and sent to your email!', 'success');
+            }, 2000);
+        }
+        
+        function addEmployee() {
+            showModal('Add Employee', `
+                <div class="employee-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <input type="text" class="form-input" placeholder="Enter first name">
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input type="text" class="form-input" placeholder="Enter last name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="form-input" placeholder="Enter email">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Department</label>
+                            <select class="form-input">
+                                <option>Engineering</option>
+                                <option>Marketing</option>
+                                <option>Sales</option>
+                                <option>HR</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Position</label>
+                            <input type="text" class="form-input" placeholder="Enter position">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Basic Salary</label>
+                            <input type="number" class="form-input" placeholder="Enter salary">
+                        </div>
+                        <div class="form-group">
+                            <label>Employee ID</label>
+                            <input type="text" class="form-input" placeholder="Auto-generated">
+                        </div>
+                    </div>
+                </div>
+            `);
+        }
+        
+        function viewSettings() {
+            showModal('Payroll Settings', `
+                <div class="settings-form">
+                    <div class="form-group">
+                        <label>Pay Period</label>
+                        <select class="form-input">
+                            <option>Monthly</option>
+                            <option>Bi-weekly</option>
+                            <option>Weekly</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Payment Method</label>
+                        <select class="form-input">
+                            <option>Bank Transfer</option>
+                            <option>Check</option>
+                            <option>Cash</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Overtime Rate</label>
+                            <input type="number" class="form-input" value="1.5" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label>Tax Rate (%)</label>
+                            <input type="number" class="form-input" value="10" step="0.1">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Deductions</label>
+                        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                            <label style="display: flex; align-items: center; gap: 6px;">
+                                <input type="checkbox" checked> Tax
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 6px;">
+                                <input type="checkbox" checked> Provident Fund
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 6px;">
+                                <input type="checkbox" checked> Insurance
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            `);
+        }
+        
+        function processPayment(employeeId) {
+            showNotification(`Processing payment for employee ${employeeId}...`, 'info');
+            setTimeout(() => {
+                showNotification('Payment processed successfully!', 'success');
+            }, 2000);
+        }
+        
+        function viewDetails(employeeId) {
+            showModal(`Employee Details - ${employeeId}`, `
+                <div class="employee-details">
+                    <div class="detail-section">
+                        <h4>Personal Information</h4>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <label>Name:</label>
+                                <span>John Doe</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Employee ID:</label>
+                                <span>${employeeId}</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Department:</label>
+                                <span>Engineering</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Position:</label>
+                                <span>Senior Developer</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail-section">
+                        <h4>Payroll Information</h4>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <label>Basic Salary:</label>
+                                <span>₹45,000</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Overtime:</label>
+                                <span>₹5,000</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Deductions:</label>
+                                <span>₹2,000</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Net Pay:</label>
+                                <span>₹48,000</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="detail-section">
+                        <h4>Attendance Summary</h4>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <label>Days Present:</label>
+                                <span>22 days</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Days Absent:</label>
+                                <span>2 days</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Hours Worked:</label>
+                                <span>176 hours</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Attendance Rate:</label>
+                                <span>95%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `);
+        }
+        
+        // Filter functions
+        function filterByDepartment(department) {
+            console.log('Filtering by department:', department);
+            showNotification(`Filtering by department: ${department || 'All'}`, 'info');
+        }
+        
+        function filterByStatus(status) {
+            console.log('Filtering by status:', status);
+            showNotification(`Filtering by status: ${status || 'All'}`, 'info');
+        }
+        
+        function filterByMonth(month) {
+            console.log('Filtering by month:', month);
+            showNotification(`Filtering by month: ${month}`, 'info');
+        }
+        
+        // Add CSS for forms and modals
+        const style = document.createElement('style');
+        style.textContent = `
+            .form-group {
+                margin-bottom: 16px;
+            }
+            
+            .form-group label {
+                display: block;
+                font-size: 14px;
+                font-weight: 600;
+                color: var(--text);
+                margin-bottom: 6px;
+            }
+            
+            .form-input {
+                width: 100%;
+                padding: 10px 12px;
+                background: rgba(15, 23, 42, 0.6);
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                color: var(--text);
+                font-size: 14px;
+            }
+            
+            .form-input:focus {
+                outline: none;
+                border-color: var(--primary);
+                box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            }
+            
+            .form-row {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 16px;
+            }
+            
+            .settings-list {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+            
+            .setting-item {
+                padding: 12px;
+                background: rgba(15, 23, 42, 0.6);
+                border-radius: 8px;
+                border: 1px solid var(--border);
+            }
+            
+            .setting-item h4 {
+                color: var(--text);
+                font-size: 14px;
+                font-weight: 600;
+                margin-bottom: 4px;
+            }
+            
+            .setting-item p {
+                color: var(--text-muted);
+                font-size: 12px;
+            }
+            
+            .employee-details {
+                max-height: 60vh;
+                overflow-y: auto;
+            }
+            
+            .detail-section {
+                margin-bottom: 24px;
+            }
+            
+            .detail-section h4 {
+                color: var(--text);
+                font-size: 16px;
+                font-weight: 600;
+                margin-bottom: 12px;
+                padding-bottom: 8px;
+                border-bottom: 1px solid var(--border);
+            }
+            
+            .detail-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 12px;
+            }
+            
+            .detail-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 8px 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            
+            .detail-item label {
+                color: var(--text-muted);
+                font-size: 14px;
+                font-weight: 500;
+            }
+            
+            .detail-item span {
+                color: var(--text);
+                font-size: 14px;
+                font-weight: 600;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Clients - Quick Mark System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="components/header.css">
+    <link rel="stylesheet" href="components/footer.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --bg: #0f172a;
+            --bg-light: #1e293b;
+            --bg-card: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-light: #cbd5e1;
+            --border: #334155;
+            --shadow: rgba(0, 0, 0, 0.25);
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+            animation: backgroundShift 20s ease-in-out infinite;
+            z-index: -1;
+        }
+        
+        @keyframes backgroundShift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 20px 80px;
+            position: relative;
+        }
+        
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 50px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--primary);
+            margin-bottom: 24px;
+        }
+        
+        .hero-title {
+            font-size: 64px;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, var(--text), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-subtitle {
+            font-size: 20px;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            line-height: 1.6;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Clients Section */
+        .clients {
+            padding: 120px 20px;
+            background: rgba(30, 41, 59, 0.3);
+        }
+        
+        .clients-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+        
+        .section-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(6, 182, 212, 0.1);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 50px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
+        
+        .section-title {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--text), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .section-subtitle {
+            font-size: 18px;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Client Categories */
+        .client-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+        
+        .category-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+            border-color: var(--primary);
+        }
+        
+        .category-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .category-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 32px;
+            color: white;
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);
+        }
+        
+        .category-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+        
+        .category-description {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .category-stats {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        
+        /* Client Grid */
+        .clients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 32px;
+            margin-bottom: 80px;
+        }
+        
+        .client-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .client-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .client-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+            border-color: var(--primary);
+        }
+        
+        .client-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .client-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .client-logo {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 20px;
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+        }
+        
+        .client-info h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+        
+        .client-info p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        
+        .client-description {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .client-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .feature-tag {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--primary);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .client-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+        
+        .metric {
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 4px;
+        }
+        
+        .metric-label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        /* Testimonials */
+        .testimonials {
+            padding: 120px 20px;
+            background: var(--bg);
+        }
+        
+        .testimonials-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 32px;
+        }
+        
+        .testimonial-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+        }
+        
+        .testimonial-quote {
+            font-size: 18px;
+            color: var(--text);
+            margin-bottom: 20px;
+            line-height: 1.6;
+            font-style: italic;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        .author-info h4 {
+            color: var(--text);
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .author-info p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        
+        /* CTA Section */
+        .cta {
+            padding: 120px 20px;
+            background: rgba(30, 41, 59, 0.3);
+        }
+        
+        .cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .cta-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 80px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient);
+            opacity: 0.05;
+            z-index: -1;
+        }
+        
+        .cta-title {
+            font-size: 40px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--text), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .cta-subtitle {
+            font-size: 18px;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+        
+        .btn {
+            padding: 16px 32px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 48px;
+            }
+            
+            .section-title {
+                font-size: 36px;
+            }
+            
+            .client-categories {
+                grid-template-columns: 1fr;
+            }
+            
+            .clients-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .client-metrics {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 36px;
+            }
+            
+            .client-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .category-stats {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header will be added by header.js -->
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-badge">
+                <i class="fas fa-star"></i>
+                Trusted by Leading Organizations
+            </div>
+            <h1 class="hero-title">Our Clients</h1>
+            <p class="hero-subtitle">
+                Discover how leading educational institutions and corporations are transforming 
+                their attendance management with our Smart Attendance System.
+            </p>
+        </div>
+    </section>
+
+    <!-- Clients Section -->
+    <section class="clients">
+        <div class="clients-container">
+            <div class="section-header">
+                <div class="section-badge">
+                    <i class="fas fa-building"></i>
+                    Client Categories
+                </div>
+                <h2 class="section-title">Serving Diverse Industries</h2>
+                <p class="section-subtitle">
+                    From prestigious universities to Fortune 500 companies, our system adapts to every need
+                </p>
+            </div>
+            
+            <div class="client-categories">
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-university"></i>
+                    </div>
+                    <h3 class="category-title">Educational Institutions</h3>
+                    <p class="category-description">
+                        Universities, colleges, and schools worldwide trust our system for accurate student attendance tracking.
+                    </p>
+                    <div class="category-stats">
+                        <div class="stat">
+                            <div class="stat-number">150+</div>
+                            <div class="stat-label">Institutions</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">500K+</div>
+                            <div class="stat-label">Students</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-hospital"></i>
+                    </div>
+                    <h3 class="category-title">Healthcare Organizations</h3>
+                    <p class="category-description">
+                        Hospitals and medical centers rely on our system for staff attendance and shift management.
+                    </p>
+                    <div class="category-stats">
+                        <div class="stat">
+                            <div class="stat-number">75+</div>
+                            <div class="stat-label">Hospitals</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">25K+</div>
+                            <div class="stat-label">Staff</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-industry"></i>
+                    </div>
+                    <h3 class="category-title">Corporate Sector</h3>
+                    <p class="category-description">
+                        Leading companies use our system for employee attendance, payroll integration, and workforce analytics.
+                    </p>
+                    <div class="category-stats">
+                        <div class="stat">
+                            <div class="stat-number">200+</div>
+                            <div class="stat-label">Companies</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">100K+</div>
+                            <div class="stat-label">Employees</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="clients-grid">
+                <div class="client-card">
+                    <div class="client-header">
+                        <div class="client-logo">IIT</div>
+                        <div class="client-info">
+                            <h3>Indian Institute of Technology</h3>
+                            <p>Premier Engineering Institute</p>
+                        </div>
+                    </div>
+                    <p class="client-description">
+                        IIT Delhi has implemented our Smart Attendance System across all departments, 
+                        serving over 15,000 students and faculty members with 99.9% accuracy.
+                    </p>
+                    <div class="client-features">
+                        <span class="feature-tag">Face Recognition</span>
+                        <span class="feature-tag">GPS Tracking</span>
+                        <span class="feature-tag">Analytics</span>
+                    </div>
+                    <div class="client-metrics">
+                        <div class="metric">
+                            <div class="metric-value">99.9%</div>
+                            <div class="metric-label">Accuracy</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">15K+</div>
+                            <div class="metric-label">Users</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">24/7</div>
+                            <div class="metric-label">Uptime</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="client-card">
+                    <div class="client-header">
+                        <div class="client-logo">AIIMS</div>
+                        <div class="client-info">
+                            <h3>All India Institute of Medical Sciences</h3>
+                            <p>Leading Medical Institution</p>
+                        </div>
+                    </div>
+                    <p class="client-description">
+                        AIIMS New Delhi uses our system for tracking medical students, residents, 
+                        and staff attendance across multiple campuses with real-time monitoring.
+                    </p>
+                    <div class="client-features">
+                        <span class="feature-tag">Multi-Campus</span>
+                        <span class="feature-tag">Real-time</span>
+                        <span class="feature-tag">Integration</span>
+                    </div>
+                    <div class="client-metrics">
+                        <div class="metric">
+                            <div class="metric-value">98.5%</div>
+                            <div class="metric-label">Accuracy</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">8K+</div>
+                            <div class="metric-label">Users</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">5</div>
+                            <div class="metric-label">Campuses</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="client-card">
+                    <div class="client-header">
+                        <div class="client-logo">TCS</div>
+                        <div class="client-info">
+                            <h3>Tata Consultancy Services</h3>
+                            <p>Global IT Services Company</p>
+                        </div>
+                    </div>
+                    <p class="client-description">
+                        TCS has deployed our system across 50+ offices in India, managing attendance 
+                        for over 100,000 employees with seamless payroll integration.
+                    </p>
+                    <div class="client-features">
+                        <span class="feature-tag">Payroll Integration</span>
+                        <span class="feature-tag">Multi-Location</span>
+                        <span class="feature-tag">Scalable</span>
+                    </div>
+                    <div class="client-metrics">
+                        <div class="metric">
+                            <div class="metric-value">99.8%</div>
+                            <div class="metric-label">Accuracy</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">100K+</div>
+                            <div class="metric-label">Employees</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">50+</div>
+                            <div class="metric-label">Offices</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="client-card">
+                    <div class="client-header">
+                        <div class="client-logo">HDFC</div>
+                        <div class="client-info">
+                            <h3>HDFC Bank</h3>
+                            <p>Leading Private Bank</p>
+                        </div>
+                    </div>
+                    <p class="client-description">
+                        HDFC Bank uses our system for branch staff attendance tracking with advanced 
+                        security features and compliance reporting for banking regulations.
+                    </p>
+                    <div class="client-features">
+                        <span class="feature-tag">Banking Security</span>
+                        <span class="feature-tag">Compliance</span>
+                        <span class="feature-tag">Reporting</span>
+                    </div>
+                    <div class="client-metrics">
+                        <div class="metric">
+                            <div class="metric-value">99.7%</div>
+                            <div class="metric-label">Accuracy</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">25K+</div>
+                            <div class="metric-label">Staff</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">500+</div>
+                            <div class="metric-label">Branches</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="client-card">
+                    <div class="client-header">
+                        <div class="client-logo">IISc</div>
+                        <div class="client-info">
+                            <h3>Indian Institute of Science</h3>
+                            <p>Premier Research Institute</p>
+                        </div>
+                    </div>
+                    <p class="client-description">
+                        IISc Bangalore has implemented our system for research scholars and faculty 
+                        attendance with advanced analytics for research productivity tracking.
+                    </p>
+                    <div class="client-features">
+                        <span class="feature-tag">Research Analytics</span>
+                        <span class="feature-tag">Productivity</span>
+                        <span class="feature-tag">Flexible</span>
+                    </div>
+                    <div class="client-metrics">
+                        <div class="metric">
+                            <div class="metric-value">99.6%</div>
+                            <div class="metric-label">Accuracy</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">5K+</div>
+                            <div class="metric-label">Researchers</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">40+</div>
+                            <div class="metric-label">Departments</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="client-card">
+                    <div class="client-header">
+                        <div class="client-logo">Apollo</div>
+                        <div class="client-info">
+                            <h3>Apollo Hospitals</h3>
+                            <p>Leading Healthcare Chain</p>
+                        </div>
+                    </div>
+                    <p class="client-description">
+                        Apollo Hospitals uses our system for medical staff attendance across 70+ 
+                        hospitals with shift management and emergency response tracking.
+                    </p>
+                    <div class="client-features">
+                        <span class="feature-tag">Shift Management</span>
+                        <span class="feature-tag">Emergency</span>
+                        <span class="feature-tag">Healthcare</span>
+                    </div>
+                    <div class="client-metrics">
+                        <div class="metric">
+                            <div class="metric-value">99.4%</div>
+                            <div class="metric-label">Accuracy</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">30K+</div>
+                            <div class="metric-label">Staff</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value">70+</div>
+                            <div class="metric-label">Hospitals</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="testimonials-container">
+            <div class="section-header">
+                <div class="section-badge">
+                    <i class="fas fa-quote-left"></i>
+                    Client Testimonials
+                </div>
+                <h2 class="section-title">What Our Clients Say</h2>
+                <p class="section-subtitle">
+                    Hear from the leaders who have transformed their organizations with our system
+                </p>
+            </div>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <p class="testimonial-quote">
+                        "Smart Attendance System has revolutionized how we track student attendance. 
+                        The accuracy is phenomenal and the integration was seamless."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">RD</div>
+                        <div class="author-info">
+                            <h4>Dr. Rajesh Kumar</h4>
+                            <p>Director, IIT Delhi</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <p class="testimonial-quote">
+                        "The system has significantly improved our staff management efficiency. 
+                        The real-time analytics help us make better decisions."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">SM</div>
+                        <div class="author-info">
+                            <h4>Dr. Sunita Mehta</h4>
+                            <p>HR Director, AIIMS</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <p class="testimonial-quote">
+                        "Implementation was smooth and the support team is excellent. 
+                        Our employees love the user-friendly interface."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">VP</div>
+                        <div class="author-info">
+                            <h4>Vikram Patel</h4>
+                            <p>CTO, TCS</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="cta-container">
+            <div class="cta-content">
+                <h2 class="cta-title">Join Our Success Stories</h2>
+                <p class="cta-subtitle">
+                    Become part of our growing community of satisfied clients who have transformed 
+                    their attendance management with Smart Attendance System.
+                </p>
+                <div class="cta-buttons">
+                    <a href="register.html" class="btn btn-primary">
+                        <i class="fas fa-rocket"></i>
+                        Start Free Trial
+                    </a>
+                    <a href="contact.html" class="btn btn-outline">
+                        <i class="fas fa-phone"></i>
+                        Contact Sales
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer will be added by footer.js -->
+    
+    <script src="components/header.js"></script>
+    <script src="components/footer.js"></script>
+    <script>
+        // Animate client cards on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.6s ease-out forwards';
+                }
+            });
+        }, observerOptions);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const clientCards = document.querySelectorAll('.client-card, .category-card, .testimonial-card');
+            clientCards.forEach(card => {
+                observer.observe(card);
+            });
+        });
+
+        // Add fadeInUp animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

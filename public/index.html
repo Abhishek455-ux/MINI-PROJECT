@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quick Mark - Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="components/header.css">
+    <link rel="stylesheet" href="components/footer.css">
+    <link rel="stylesheet" href="components/profile.css">
+    <style>
+      :root { --bg:#0b1220; --card:#121a2b; --text:#e8eefc; --muted:#9fb0d0; --accent:#4f8cff; --green:#34d399; --red:#ef4444; }
+      *{ box-sizing:border-box }
+      body{ margin:0; font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:linear-gradient(180deg,#0b1220 0%,#0d1526 100%); color:var(--text); }
+      .container{ max-width:1100px; margin:40px auto; padding:0 20px; }
+      header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; }
+      .brand{ display:flex; align-items:center; gap:12px; font-weight:700; letter-spacing:.3px; }
+      .brand .logo{ width:36px; height:36px; border-radius:8px; background:linear-gradient(135deg,#4f8cff,#7c3aed); display:grid; place-items:center; font-weight:800; animation: logoFloat 3s ease-in-out infinite; position: relative; overflow: hidden; }
+      .brand .logo::before{ content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent); animation: logoShine 2s ease-in-out infinite; }
+      @keyframes logoFloat{ 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-3px) rotate(1deg); } }
+      @keyframes logoShine{ 0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); } 50% { transform: translateX(100%) translateY(100%) rotate(45deg); } 100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); } }
+      .pill{ padding:6px 10px; border:1px solid #223151; background:#0e1930; border-radius:999px; color:var(--muted); font-size:12px }
+      .grid{ display:grid; gap:16px; grid-template-columns: repeat(12, 1fr); }
+      .card{ grid-column: span 12; background:radial-gradient(1200px 400px at -20% -40%,rgba(79,140,255,.15),transparent),radial-gradient(800px 300px at 120% -20%,rgba(124,58,237,.12),transparent),var(--card); border:1px solid #1b2742; border-radius:14px; padding:16px }
+      @media(min-width:840px){ .card--lg{ grid-column: span 8 } .card--sm{ grid-column: span 4 } }
+      h1{ margin:0 0 8px 0; font-size:22px }
+      .muted{ color:var(--muted); font-size:14px }
+      .kpis{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:12px }
+      .kpi{ background:#0f1a31; border:1px solid #1a2744; border-radius:10px; padding:12px }
+      .kpi .label{ color:var(--muted); font-size:12px }
+      .kpi .value{ font-size:22px; font-weight:700; margin-top:4px }
+      .kpi .trend{ font-size:12px; color:var(--green) }
+      table{ width:100%; border-collapse:collapse; margin-top:8px; }
+      th, td{ text-align:left; padding:10px 8px; border-bottom:1px solid #1a2744; font-size:14px }
+      th{ color:var(--muted); font-weight:600 }
+      .status{ padding:4px 8px; border-radius:999px; font-size:12px; display:inline-block }
+      .present{ background:rgba(52,211,153,.12); color:var(--green); border:1px solid rgba(52,211,153,.3) }
+      .absent{ background:rgba(239,68,68,.12); color:var(--red); border:1px solid rgba(239,68,68,.3) }
+      .late{ background:rgba(249,115,22,.12); color:#f59e0b; border:1px solid rgba(249,115,22,.3) }
+      footer{ margin-top:24px; color:var(--muted); font-size:12px; text-align:center }
+      .toolbar{ display:flex; gap:8px; }
+      .btn{ background:#182647; border:1px solid #223151; color:var(--text); padding:8px 10px; border-radius:8px; font-size:13px; cursor:pointer }
+      .btn:hover{ background:#1b2a51 }
+      .search{ flex:1; background:#0e1930; border:1px solid #223151; padding:8px 10px; border-radius:8px; color:var(--text) }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header will be added by header.js -->
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
+        <div class="pill" id="modeIndicator">Demo Mode</div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn" onclick="fakeLogin('admin@school.edu')">Login as Admin</button>
+          <button class="btn" onclick="fakeLogin('student@school.edu')">Login as Student</button>
+        </div>
+      </div>
+
+      <div class="grid">
+        <section class="card card--lg">
+          <h1>Attendance Overview</h1>
+          <div class="muted">Today's attendance summary</div>
+          <div class="kpis" id="kpis">
+            <div class="kpi"><div class="label">Present</div><div class="value" id="kpi-present">0</div><div class="trend" id="kpi-present-trend">+0%</div></div>
+            <div class="kpi"><div class="label">Absent</div><div class="value" id="kpi-absent">0</div><div class="trend" id="kpi-absent-trend">-0%</div></div>
+            <div class="kpi"><div class="label">Late</div><div class="value" id="kpi-late">0</div><div class="trend" id="kpi-late-trend">+0%</div></div>
+          </div>
+          
+        </section>
+
+        <section class="card card--sm">
+          <div style="display:flex; align-items:center; justify-content:space-between">
+            <h1>Quick Actions</h1>
+            <div class="toolbar">
+              <button class="btn" onclick="fakeLogin('admin@school.edu')">Login as Admin</button>
+              <button class="btn" onclick="fakeLogin('student@school.edu')">Login as Student</button>
+            </div>
+          </div>
+          <input id="search" class="search" placeholder="Search students..." />
+        </section>
+
+        <section class="card" style="grid-column:span 12">
+          <h1>Recent Attendance</h1>
+          <table id="table">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Class</th>
+                <th>Time</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="tbody">
+            </tbody>
+          </table>
+        </section>
+      </div>
+
+      <footer>Quick Mark System - Admin Dashboard | <a href="/student.html" style="color: var(--accent); text-decoration: none;">Student Portal</a> | <a href="/about.html" style="color: var(--accent); text-decoration: none;">About</a> | <a href="/landing.html" style="color: var(--accent); text-decoration: none;">Home</a> | API at <code>/api/*</code></footer>
+    </div>
+
+    <script src="components/header.js"></script>
+    <script src="components/footer.js"></script>
+    <script src="components/profile.js"></script>
+    <script>
+      async function loadSummary(){
+        try{
+          const res = await fetch('/api/attendance/summary');
+          const data = await res.json();
+          const p = data?.today?.present || 0;
+          const a = data?.today?.absent || 0;
+          const l = data?.today?.late || 0;
+          document.getElementById('kpi-present').textContent = p;
+          document.getElementById('kpi-absent').textContent = a;
+          document.getElementById('kpi-late').textContent = l;
+        }catch(e){ console.log('summary error', e) }
+      }
+
+      async function fakeLogin(email){
+        try {
+          const password = email === 'admin@school.edu' ? 'admin123' : 'demo123';
+          const res = await fetch('/api/auth/login',{
+            method:'POST', 
+            headers:{'Content-Type':'application/json'}, 
+            body:JSON.stringify({ email, password })
+          });
+          const data = await res.json();
+          if (res.ok) {
+            // Store token and user data
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('user', JSON.stringify(data.user));
+            
+            alert('✅ ' + data.message + '\nLogged in as: ' + (data?.user?.role || 'guest').toUpperCase());
+            
+            // Redirect based on role
+            setTimeout(() => {
+              if (data.user.role === 'admin') {
+                window.location.href = 'index.html';
+              } else if (data.user.role === 'student') {
+                window.location.href = 'student.html';
+              } else {
+                window.location.href = 'landing.html';
+              }
+            }, 1000);
+          } else {
+            alert('❌ ' + (data.message || 'Login failed'));
+          }
+        } catch (error) {
+          alert('❌ Login error: ' + error.message);
+        }
+      }
+
+      function fillTable(){
+        const tbody = document.getElementById('tbody');
+        const rows = [
+          { name:'John Doe', cls:'Math 101', time:'08:31', status:'present' },
+          { name:'Jane Smith', cls:'Physics 201', time:'08:35', status:'late' },
+          { name:'Ali Khan', cls:'Chemistry 110', time:'—', status:'absent' },
+          { name:'Sarah Wilson', cls:'Computer Science', time:'08:28', status:'present' },
+          { name:'Mike Johnson', cls:'Biology 101', time:'08:42', status:'late' }
+        ];
+        tbody.innerHTML = rows.map(r => `<tr>
+          <td>${r.name}</td>
+          <td>${r.cls}</td>
+          <td>${r.time}</td>
+          <td><span class="status ${r.status}">${r.status}</span></td>
+        </tr>`).join('');
+      }
+
+      // Check server status
+      async function checkServerStatus() {
+        try {
+          const res = await fetch('/api/auth/health');
+          const data = await res.json();
+          if (data.status === 'ok') {
+            document.getElementById('modeIndicator').textContent = 'Demo Mode - Server Running';
+            document.getElementById('modeIndicator').style.background = 'rgba(16, 185, 129, 0.1)';
+            document.getElementById('modeIndicator').style.color = '#10b981';
+            document.getElementById('modeIndicator').style.border = '1px solid rgba(16, 185, 129, 0.3)';
+          }
+        } catch (error) {
+          document.getElementById('modeIndicator').textContent = 'Server Offline';
+          document.getElementById('modeIndicator').style.background = 'rgba(239, 68, 68, 0.1)';
+          document.getElementById('modeIndicator').style.color = '#ef4444';
+          document.getElementById('modeIndicator').style.border = '1px solid rgba(239, 68, 68, 0.3)';
+        }
+      }
+
+        // Check authentication
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            
+            // Always set admin demo data for admin page access
+            const demoUser = {
+                _id: 'demo-admin-1',
+                name: 'Admin User',
+                email: 'admin@school.edu',
+                role: 'admin'
+            };
+            localStorage.setItem('token', 'demo-token-admin');
+            localStorage.setItem('user', JSON.stringify(demoUser));
+            
+            // If there's existing user data, check if it's student
+            if (token && user) {
+                try {
+                    const userData = JSON.parse(user);
+                    // Only redirect if user is explicitly student
+                    if (userData.role === 'student') {
+                        window.location.href = 'student.html';
+                        return;
+                    }
+                } catch (e) {
+                    // If parsing fails, continue with demo admin data
+                    console.log('Using demo admin data');
+                }
+            }
+        }
+
+      // Logout function
+      function logout() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = 'login.html';
+      }
+
+      // Initialize page
+      checkAuth();
+      loadSummary();
+      fillTable();
+      checkServerStatus();
+    </script>
+  </body>
+</html>
+
+

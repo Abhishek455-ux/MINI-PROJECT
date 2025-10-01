@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Mark - Student Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="components/header.css">
+    <link rel="stylesheet" href="components/footer.css">
+    <link rel="stylesheet" href="components/profile.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --bg: #0f172a;
+            --bg-light: #1e293b;
+            --bg-card: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-light: #cbd5e1;
+            --border: #334155;
+            --shadow: rgba(0, 0, 0, 0.25);
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Advanced background effects */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+            animation: backgroundFloat 20s ease-in-out infinite;
+            z-index: -1;
+        }
+        
+        @keyframes backgroundFloat {
+            0%, 100% { opacity: 1; transform: translateY(0px); }
+            50% { opacity: 0.8; transform: translateY(-10px); }
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header */
+        .header {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(20px);
+        }
+        
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 24px;
+        }
+        
+        .logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: white;
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);
+            animation: logoFloat 3s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .logo::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: logoShine 2s ease-in-out infinite;
+        }
+        
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-5px) rotate(1deg); }
+        }
+        
+        @keyframes logoShine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+            100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .user-details {
+            text-align: right;
+        }
+        
+        .user-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .user-role {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-outline:hover {
+            background: var(--bg-light);
+            color: var(--text);
+        }
+        
+        .btn-danger {
+            background: var(--error);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+        
+        /* Main Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(99, 102, 241, 0.1);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            padding: 12px 24px;
+            width: 100%;
+            font-size: 16px;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Camera Section */
+        .camera-container {
+            position: relative;
+            margin: 16px 0;
+            text-align: center;
+        }
+        
+        #camera {
+            width: 100%;
+            max-width: 300px;
+            height: 200px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            object-fit: cover;
+        }
+        
+        .camera-controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            justify-content: center;
+        }
+        
+        .btn-secondary {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--bg-light);
+        }
+        
+        /* Location Info */
+        .location-info {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+        
+        .location-info h4 {
+            color: var(--primary);
+            font-size: 14px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .location-details {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .location-details div {
+            margin-bottom: 4px;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .stat-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .attendance-rate {
+            text-align: center;
+            margin-top: 16px;
+        }
+        
+        .rate-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 4px;
+        }
+        
+        .rate-label {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        
+        /* Recent Attendance */
+        .attendance-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .attendance-item:last-child {
+            border-bottom: none;
+        }
+        
+        .attendance-date {
+            font-weight: 500;
+            color: var(--text);
+        }
+        
+        .attendance-time {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-present {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .status-absent {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .status-late {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        /* Face Registration */
+        .face-status {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .face-status h4 {
+            color: var(--success);
+            font-size: 14px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .face-status p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        /* Alerts */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 16px 0;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--success);
+        }
+        
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: var(--error);
+        }
+        
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: var(--warning);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 16px;
+                align-items: flex-start;
+            }
+            
+            .user-info {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .camera-controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header will be added by header.js -->
+
+        <!-- Main Grid -->
+        <div class="main-grid">
+            <!-- Attendance Form -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Mark Attendance</h2>
+                    <div class="card-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+                
+                <div id="alertContainer"></div>
+                
+                <form id="attendanceForm">
+                    <div class="form-group">
+                        <label class="form-label">Class Session</label>
+                        <select class="form-control" id="classSession" required>
+                            <option value="">Select Class</option>
+                            <option value="math101">Math 101 - Algebra</option>
+                            <option value="physics201">Physics 201 - Mechanics</option>
+                            <option value="chem110">Chemistry 110 - General Chemistry</option>
+                            <option value="cs101">Computer Science 101 - Programming</option>
+                            <option value="eng201">English 201 - Literature</option>
+                        </select>
+                    </div>
+
+                    <div class="camera-container">
+                        <video id="camera" autoplay muted></video>
+                        <div class="camera-controls">
+                            <button type="button" class="btn btn-secondary" onclick="startCamera()">
+                                <i class="fas fa-video"></i>
+                                Start Camera
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="stopCamera()">
+                                <i class="fas fa-video-slash"></i>
+                                Stop Camera
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="capturePhoto()">
+                                <i class="fas fa-camera"></i>
+                                Capture Photo
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="location-info">
+                        <h4>
+                            <i class="fas fa-map-marker-alt"></i>
+                            Location Status
+                        </h4>
+                        <div class="location-details" id="locationStatus">
+                            <div>Status: <span id="locationStatusText">Checking...</span></div>
+                            <div>Distance: <span id="locationDistance">-</span></div>
+                            <div>Accuracy: <span id="locationAccuracy">-</span></div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <i class="fas fa-check"></i>
+                        Mark Present
+                    </button>
+                </form>
+            </div>
+
+            <!-- Statistics -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">My Statistics</h2>
+                    <div class="card-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalClasses">24</div>
+                        <div class="stat-label">Total Classes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="presentCount">20</div>
+                        <div class="stat-label">Present</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="absentCount">2</div>
+                        <div class="stat-label">Absent</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="lateCount">2</div>
+                        <div class="stat-label">Late</div>
+                    </div>
+                </div>
+                
+                <div class="attendance-rate">
+                    <div class="rate-value" id="attendanceRate">83.3%</div>
+                    <div class="rate-label">Attendance Rate</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Attendance -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Recent Attendance</h2>
+                <div class="card-icon">
+                    <i class="fas fa-history"></i>
+                </div>
+            </div>
+            <div id="recentAttendance">
+                <div class="attendance-item">
+                    <div>
+                        <div class="attendance-date">Today - Math 101</div>
+                        <div class="attendance-time">08:30 AM</div>
+                    </div>
+                    <div class="status-badge status-present">Present</div>
+                </div>
+                <div class="attendance-item">
+                    <div>
+                        <div class="attendance-date">Yesterday - Physics 201</div>
+                        <div class="attendance-time">08:35 AM</div>
+                    </div>
+                    <div class="status-badge status-late">Late</div>
+                </div>
+                <div class="attendance-item">
+                    <div>
+                        <div class="attendance-date">2 days ago - Chemistry 110</div>
+                        <div class="attendance-time">-</div>
+                    </div>
+                    <div class="status-badge status-absent">Absent</div>
+                </div>
+                <div class="attendance-item">
+                    <div>
+                        <div class="attendance-date">3 days ago - CS 101</div>
+                        <div class="attendance-time">08:28 AM</div>
+                    </div>
+                    <div class="status-badge status-present">Present</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Face Registration -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Face Registration</h2>
+                <div class="card-icon">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+            </div>
+            <div class="face-status">
+                <h4>
+                    <i class="fas fa-check-circle"></i>
+                    Face Registered
+                </h4>
+                <p>Your face is registered for attendance verification. You can re-register if needed.</p>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="reRegisterFace()">
+                <i class="fas fa-sync-alt"></i>
+                Re-register Face
+            </button>
+        </div>
+    </div>
+
+    <script src="components/header.js"></script>
+    <script src="components/footer.js"></script>
+    <script src="components/profile.js"></script>
+    <script>
+        let currentStream = null;
+        let capturedPhoto = null;
+
+        // Check authentication
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            
+            // Always set student demo data for student page access
+            const demoUser = {
+                _id: 'demo-student-1',
+                name: 'John Doe',
+                email: 'john@student.edu',
+                role: 'student',
+                studentId: 'STU001',
+                department: 'Computer Science'
+            };
+            localStorage.setItem('token', 'demo-token-student');
+            localStorage.setItem('user', JSON.stringify(demoUser));
+            
+            // If there's existing user data, check if it's admin
+            if (token && user) {
+                try {
+                    const userData = JSON.parse(user);
+                    // Only redirect if user is explicitly admin
+                    if (userData.role === 'admin') {
+                        window.location.href = 'index.html';
+                        return;
+                    }
+                } catch (e) {
+                    // If parsing fails, continue with demo student data
+                    console.log('Using demo student data');
+                }
+            }
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+
+        // Clear any admin data and ensure student access
+        function ensureStudentAccess() {
+            const user = localStorage.getItem('user');
+            if (user) {
+                try {
+                    const userData = JSON.parse(user);
+                    if (userData.role === 'admin') {
+                        // Clear admin data and set student data
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                    }
+                } catch (e) {
+                    // Clear invalid data
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                }
+            }
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            ensureStudentAccess();
+            checkAuth();
+            loadUserData();
+            checkLocation();
+            loadAttendanceStats();
+        });
+
+        // Load user data
+        async function loadUserData() {
+            try {
+                const user = JSON.parse(localStorage.getItem('user')) || {
+                    name: 'John Doe',
+                    role: 'student',
+                    studentId: 'STU001',
+                    department: 'Computer Science',
+                    year: '2024'
+                };
+                
+                document.getElementById('userName').textContent = user.name;
+                document.getElementById('userRole').textContent = user.role.toUpperCase();
+                document.getElementById('userAvatar').textContent = user.name.split(' ').map(n => n[0]).join('');
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        }
+
+        // Check location
+        async function checkLocation() {
+            try {
+                if (!navigator.geolocation) {
+                    showAlert('Geolocation is not supported by this browser.', 'error');
+                    document.getElementById('locationStatusText').textContent = 'Not Supported';
+                    return;
+                }
+
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        const { latitude, longitude, accuracy } = position.coords;
+                        
+                        try {
+                            // Send location to server for verification
+                            const response = await fetch('/api/gps/check-location', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({
+                                    latitude,
+                                    longitude,
+                                    accuracy
+                                })
+                            });
+                            
+                            const data = await response.json();
+                            
+                            if (data.isWithinBounds) {
+                                document.getElementById('locationStatusText').textContent = 'Within Classroom';
+                                document.getElementById('locationDistance').textContent = `${Math.round(data.distance)}m from classroom center`;
+                                document.getElementById('locationAccuracy').textContent = `${Math.round(accuracy)}m`;
+                            } else {
+                                document.getElementById('locationStatusText').textContent = 'Outside Classroom';
+                                document.getElementById('locationDistance').textContent = `${Math.round(data.distance)}m from classroom center`;
+                                document.getElementById('locationAccuracy').textContent = `${Math.round(accuracy)}m`;
+                                showAlert('You are outside the classroom area. Please move closer to mark attendance.', 'warning');
+                            }
+                        } catch (apiError) {
+                            console.error('GPS API error:', apiError);
+                            // Fallback to mock data
+                            document.getElementById('locationStatusText').textContent = 'Within Classroom (Demo)';
+                            document.getElementById('locationDistance').textContent = '15m from classroom center';
+                            document.getElementById('locationAccuracy').textContent = `${Math.round(accuracy)}m`;
+                        }
+                    },
+                    (error) => {
+                        console.error('Geolocation error:', error);
+                        let errorMessage = 'Unable to get your location. ';
+                        
+                        switch(error.code) {
+                            case error.PERMISSION_DENIED:
+                                errorMessage += 'Please allow location access and try again.';
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                errorMessage += 'Location information is unavailable.';
+                                break;
+                            case error.TIMEOUT:
+                                errorMessage += 'Location request timed out.';
+                                break;
+                            default:
+                                errorMessage += 'Please enable location services.';
+                                break;
+                        }
+                        
+                        showAlert(errorMessage, 'error');
+                        document.getElementById('locationStatusText').textContent = 'Location Error';
+                        document.getElementById('locationDistance').textContent = '-';
+                        document.getElementById('locationAccuracy').textContent = '-';
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 15000,
+                        maximumAge: 30000
+                    }
+                );
+            } catch (error) {
+                console.error('Location check error:', error);
+                showAlert('Location check failed. Please try again.', 'error');
+                document.getElementById('locationStatusText').textContent = 'Check Failed';
+            }
+        }
+
+        // Start camera
+        async function startCamera() {
+            try {
+                currentStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: { ideal: 640 },
+                        height: { ideal: 480 }
+                    } 
+                });
+                document.getElementById('camera').srcObject = currentStream;
+                showAlert('Camera started successfully!', 'success');
+            } catch (error) {
+                console.error('Camera error:', error);
+                showAlert('Unable to access camera. Please check permissions.', 'error');
+            }
+        }
+
+        // Stop camera
+        function stopCamera() {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+                currentStream = null;
+                document.getElementById('camera').srcObject = null;
+                showAlert('Camera stopped.', 'success');
+            }
+        }
+
+        // Capture photo
+        function capturePhoto() {
+            const video = document.getElementById('camera');
+            if (!video.srcObject) {
+                showAlert('Please start the camera first.', 'error');
+                return;
+            }
+            
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            context.drawImage(video, 0, 0);
+            
+            canvas.toBlob((blob) => {
+                capturedPhoto = blob;
+                showAlert('Photo captured successfully!', 'success');
+                
+                // Create a preview of the captured photo
+                const preview = document.createElement('img');
+                preview.src = URL.createObjectURL(blob);
+                preview.style.width = '100px';
+                preview.style.height = '75px';
+                preview.style.borderRadius = '8px';
+                preview.style.marginTop = '8px';
+                preview.style.border = '2px solid var(--success)';
+                
+                // Remove any existing preview
+                const existingPreview = document.querySelector('.photo-preview');
+                if (existingPreview) {
+                    existingPreview.remove();
+                }
+                
+                preview.className = 'photo-preview';
+                document.querySelector('.camera-container').appendChild(preview);
+                
+                // Enable face registration button
+                const reRegisterBtn = document.querySelector('button[onclick="reRegisterFace()"]');
+                if (reRegisterBtn) {
+                    reRegisterBtn.disabled = false;
+                    reRegisterBtn.style.opacity = '1';
+                }
+            }, 'image/jpeg', 0.8);
+        }
+
+        // Handle attendance form submission
+        document.getElementById('attendanceForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Marking Attendance...';
+
+            try {
+                const classSession = document.getElementById('classSession').value;
+                
+                if (!classSession) {
+                    showAlert('Please select a class session.', 'error');
+                    return;
+                }
+
+                // Simulate attendance marking
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                showAlert('Attendance marked successfully!', 'success');
+                document.getElementById('attendanceForm').reset();
+                loadAttendanceStats();
+                
+            } catch (error) {
+                console.error('Attendance error:', error);
+                showAlert('Failed to mark attendance. Please try again.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-check"></i> Mark Present';
+            }
+        });
+
+        // Load attendance statistics
+        async function loadAttendanceStats() {
+            try {
+                // Mock data - replace with actual API call
+                const stats = {
+                    total: 24,
+                    present: 20,
+                    absent: 2,
+                    late: 2,
+                    attendanceRate: 83.3
+                };
+
+                document.getElementById('totalClasses').textContent = stats.total;
+                document.getElementById('presentCount').textContent = stats.present;
+                document.getElementById('absentCount').textContent = stats.absent;
+                document.getElementById('lateCount').textContent = stats.late;
+                document.getElementById('attendanceRate').textContent = `${stats.attendanceRate}%`;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // Show alert
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'exclamation-triangle'}"></i> ${message}`;
+            
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alert);
+            
+            setTimeout(() => {
+                alertContainer.innerHTML = '';
+            }, 5000);
+        }
+
+        // Re-register face
+        async function reRegisterFace() {
+            if (!capturedPhoto) {
+                showAlert('Please capture a photo first.', 'error');
+                return;
+            }
+
+            try {
+                showAlert('Face re-registration in progress...', 'success');
+                
+                // Create FormData to send the photo
+                const formData = new FormData();
+                formData.append('photo', capturedPhoto, 'face-photo.jpg');
+                formData.append('studentId', 'STU001'); // Demo student ID
+                
+                // Try to send to server first
+                try {
+                    const response = await fetch('/api/face-recognition/register', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        showAlert('Face re-registered successfully!', 'success');
+                    } else {
+                        throw new Error('Server error');
+                    }
+                } catch (serverError) {
+                    // Fallback to demo mode
+                    console.log('Server not available, using demo mode');
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    showAlert('Face re-registered successfully! (Demo Mode)', 'success');
+                }
+                
+                // Update face status
+                const faceStatus = document.querySelector('.face-status');
+                if (faceStatus) {
+                    faceStatus.innerHTML = `
+                        <h4>
+                            <i class="fas fa-check-circle"></i>
+                            Face Re-registered
+                        </h4>
+                        <p>Your face has been successfully re-registered for attendance verification.</p>
+                    `;
+                }
+                
+            } catch (error) {
+                console.error('Face registration error:', error);
+                showAlert('Failed to register face. Please try again.', 'error');
+            }
+        }
+    </script>
+</body>
+</html>
