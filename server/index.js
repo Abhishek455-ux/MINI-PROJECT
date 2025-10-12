@@ -18,8 +18,19 @@ const io = new Server(server, {
   }
 });
 
-// Security middleware
-app.use(helmet());
+// Security middleware with CSP configuration for inline scripts
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'", "ws:", "wss:"],
+    },
+  },
+}));
 app.use(compression());
 
 // Rate limiting
@@ -112,4 +123,3 @@ server.listen(PORT, () => {
 });
 
 module.exports = app;
-
