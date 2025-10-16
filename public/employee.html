@@ -651,7 +651,32 @@
                     </div>
                 </div>
             </div>
-
+            <!-- Live Face Capture Card -->
+            <div class="card card-small" id="face-capture-card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <div class="card-icon">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        Live Face Capture
+                    </div>
+                    <a href="#" class="card-action" onclick="toggleFaceCard()">Toggle</a>
+                </div>
+                <div class="face-capture">
+                    <video id="faceVideo" autoplay playsinline width="320" height="240" style="background: #000; border-radius:8px; border:1px solid var(--border);"></video>
+                    <canvas id="faceCanvas" width="320" height="240" style="display:none;"></canvas>
+                    <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+                        <button class="time-btn time-btn-primary" id="startCameraBtn">Start Camera</button>
+                        <button class="time-btn time-btn-outline" id="stopCameraBtn" disabled>Stop Camera</button>
+                        <button class="time-btn time-btn-primary" id="captureVerifyBtn">Capture & Verify</button>
+                        <button class="time-btn time-btn-outline" id="registerFaceBtn">Register Face</button>
+                    </div>
+                    <div style="margin-top:10px; color:var(--text-muted); font-size:13px;">
+                        <div id="faceLocation">Location: <span id="faceCoords">unknown</span></div>
+                        <div id="faceStatus" style="margin-top:6px;">Status: <span id="faceStatusText">idle</span></div>
+                    </div>
+                </div>
+            </div>
             <!-- Quick Stats Card -->
             <div class="card card-small">
                 <div class="card-header">
@@ -872,6 +897,129 @@
     <script src="components/header.js"></script>
     <script src="components/footer.js"></script>
     <script src="components/profile.js"></script>
+    <script>
+        // Face capture + GPS integration
+        let faceStream = null;
+        const video = document.getElementById('faceVideo');
+        const canvas = document.getElementById('faceCanvas');
+        const ctx = canvas.getContext('2d');
+        const startBtn = document.getElementById('startCameraBtn');
+        const stopBtn = document.getElementById('stopCameraBtn');
+        const captureVerifyBtn = document.getElementById('captureVerifyBtn');
+        const registerFaceBtn = document.getElementById('registerFaceBtn');
+        const statusText = document.getElementById('faceStatusText');
+        const coordsText = document.getElementById('faceCoords');
+
+        function setStatus(msg) {
+            statusText.textContent = msg;
+        }
+
+        async function startCamera() {
+            try {
+                faceStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+                video.srcObject = faceStream;
+                await video.play();
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+                setStatus('camera started');
+            } catch (err) {
+                console.error('Camera start error', err);
+                setStatus('camera error');
+            }
+        }
+
+        function stopCamera() {
+            if (faceStream) {
+                faceStream.getTracks().forEach(t => t.stop());
+                faceStream = null;
+                video.srcObject = null;
+            }
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+            setStatus('camera stopped');
+        }
+
+        async function getLocation() {
+            return new Promise((resolve, reject) => {
+                if (!navigator.geolocation) return resolve(null);
+                navigator.geolocation.getCurrentPosition(pos => {
+                    resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude, accuracy: pos.coords.accuracy });
+                }, err => {
+                    resolve(null);
+                }, { enableHighAccuracy: true, timeout: 10000 });
+            });
+        }
+
+        function captureFrameBlob() {
+            // draw current video frame into canvas and return blob
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            return new Promise((resolve) => {
+                canvas.toBlob(blob => {
+                    resolve(blob);
+                }, 'image/jpeg', 0.9);
+            });
+        }
+
+        async function sendFace(endpoint, extra = {}) {
+            if (!video || video.srcObject == null) {
+                setStatus('camera not started');
+                return;
+            }
+
+            setStatus('capturing...');
+            const blob = await captureFrameBlob();
+            const loc = await getLocation();
+            if (loc) coordsText.textContent = `${loc.lat.toFixed(5)}, ${loc.lng.toFixed(5)} (acc ${Math.round(loc.accuracy)}m)`;
+            else coordsText.textContent = 'unavailable';
+
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const fd = new FormData();
+            fd.append('faceImage', blob, 'capture.jpg');
+            if (user && (user.id || user._id)) fd.append('userId', user.id || user._id);
+            if (extra.classSessionId) fd.append('classSessionId', extra.classSessionId);
+            if (loc) {
+                fd.append('lat', loc.lat);
+                fd.append('lng', loc.lng);
+                fd.append('accuracy', loc.accuracy);
+            }
+
+            setStatus('sending to server...');
+            try {
+                const response = await fetch(endpoint, { method: 'POST', body: fd });
+                const data = await response.json();
+                if (response.ok) {
+                    setStatus(data.message || 'success');
+                    showToast(data.message || 'Success', 'success');
+                } else {
+                    setStatus(data.message || 'failed');
+                    showToast(data.message || 'Failed', 'error');
+                }
+            } catch (err) {
+                console.error('Send face error', err);
+                setStatus('network error');
+                showToast('Network error', 'error');
+            }
+        }
+
+        startBtn.addEventListener('click', startCamera);
+        stopBtn.addEventListener('click', stopCamera);
+
+        captureVerifyBtn.addEventListener('click', async () => {
+            await sendFace('/api/face-recognition/verify-face');
+        });
+
+        registerFaceBtn.addEventListener('click', async () => {
+            await sendFace('/api/face-recognition/register-face');
+        });
+
+        function toggleFaceCard() {
+            const card = document.getElementById('face-capture-card');
+            card.style.display = (card.style.display === 'none') ? 'block' : 'none';
+        }
+
+        // Ensure camera stopped when leaving
+        window.addEventListener('beforeunload', stopCamera);
+    </script>
     <script>
         // Update current time
         function updateTime() {
