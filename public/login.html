@@ -1095,6 +1095,26 @@
                     localStorage.removeItem('user');
                 }
             }
+
+            // Preselect role and prefill email when redirected from registration
+            (function prefillFromQuery() {
+                const params = new URLSearchParams(window.location.search);
+                const role = params.get('role');
+                const email = params.get('email');
+                if (role) {
+                    document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+                    const el = document.querySelector(`[data-role="${role}"]`);
+                    if (el) el.classList.add('active');
+                    selectedRole = role;
+                }
+                if (email) {
+                    try {
+                        document.getElementById('email').value = decodeURIComponent(email);
+                    } catch (e) {
+                        document.getElementById('email').value = email;
+                    }
+                }
+            })();
         });
 
         // Auto-fill demo credentials for easy testing

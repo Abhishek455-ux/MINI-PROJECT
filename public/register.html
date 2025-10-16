@@ -602,6 +602,17 @@
                         required
                     >
                 </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="profileImage">Profile Image (optional)</label>
+                    <input
+                        type="file"
+                        id="profileImage"
+                        name="profileImage"
+                        class="form-input"
+                        accept="image/*"
+                    >
+                </div>
                 
                 <div class="form-group full-width">
                     <label class="form-label" for="password">Password</label>
@@ -796,33 +807,33 @@
             setLoading(true);
             
             try {
-                const response = await fetch('/api/auth/register', {
+                // If formData is a FormData instance, let fetch set headers for multipart
+                const opts = {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData)
-                });
+                };
+                if (formData instanceof FormData) {
+                    opts.body = formData;
+                } else {
+                    opts.headers = { 'Content-Type': 'application/json' };
+                    opts.body = JSON.stringify(formData);
+                }
+
+                const response = await fetch('/api/auth/register', opts);
                 
                 const data = await response.json();
                 
                 if (response.ok) {
-                    // Store token and user data
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    
-                    showAlert('Account created successfully! Redirecting to dashboard...', 'success');
-                    
+                    // Do NOT auto-login. Redirect user to login page to sign in.
+                    showAlert('Account created successfully! Please sign in.', 'success');
+
                     setTimeout(() => {
-                        // Redirect based on user role
-                        if (data.user.role === 'admin') {
-                            window.location.href = 'index.html';
-                        } else if (data.user.role === 'student') {
-                            window.location.href = 'student.html';
-                        } else {
-                            window.location.href = 'landing.html';
-                        }
-                    }, 2000);
+                        // Pass role and email to login page so it can preselect role and prefill email
+                        const redirectRole = encodeURIComponent(selectedRole || 'student');
+                        const redirectEmail = encodeURIComponent(email || '');
+                        let redirectUrl = `login.html?role=${redirectRole}`;
+                        if (redirectEmail) redirectUrl += `&email=${redirectEmail}`;
+                        window.location.href = redirectUrl;
+                    }, 1200);
                 } else {
                     showAlert(data.message || 'Registration failed', 'error');
                 }
@@ -870,14 +881,28 @@
                 return;
             }
             
-            // Build form data based on role
-            const formData = {
-                name: `${firstName} ${lastName}`,
-                email,
-                password,
-                phone,
-                role: selectedRole
-            };
+            // Build form data based on role. Use FormData when an image file is present.
+            const fileInput = document.getElementById('profileImage');
+            const hasFile = fileInput && fileInput.files && fileInput.files.length > 0;
+
+            let payload;
+            if (hasFile) {
+                payload = new FormData();
+                payload.append('profileImage', fileInput.files[0]);
+                payload.append('name', `${firstName} ${lastName}`);
+                payload.append('email', email);
+                payload.append('password', password);
+                payload.append('phone', phone);
+                payload.append('role', selectedRole);
+            } else {
+                payload = {
+                    name: `${firstName} ${lastName}`,
+                    email,
+                    password,
+                    phone,
+                    role: selectedRole
+                };
+            }
             
             if (selectedRole === 'student') {
                 const studentId = document.getElementById('studentId').value.trim();
@@ -889,11 +914,17 @@
                     showAlert('Please fill in all student fields', 'error');
                     return;
                 }
-                
-                formData.studentId = studentId;
-                formData.department = department;
-                formData.year = year;
-                formData.section = section;
+                if (hasFile) {
+                    payload.append('student_id', studentId);
+                    payload.append('department', department);
+                    payload.append('year', year);
+                    payload.append('section', section);
+                } else {
+                    payload.student_id = studentId;
+                    payload.department = department;
+                    payload.year = year;
+                    payload.section = section;
+                }
             } else {
                 const adminId = document.getElementById('adminId').value.trim();
                 const institution = document.getElementById('institution').value.trim();
@@ -903,13 +934,18 @@
                     showAlert('Please fill in all admin fields', 'error');
                     return;
                 }
-                
-                formData.adminId = adminId;
-                formData.institution = institution;
-                formData.position = position;
+                if (hasFile) {
+                    payload.append('admin_id', adminId);
+                    payload.append('institution', institution);
+                    payload.append('position', position);
+                } else {
+                    payload.admin_id = adminId;
+                    payload.institution = institution;
+                    payload.position = position;
+                }
             }
             
-            await handleRegistration(formData);
+            await handleRegistration(payload);
         });
 
         // Event listeners

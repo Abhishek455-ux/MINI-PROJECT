@@ -48,4 +48,5 @@ function markAttendance() {
     // Call backend to mark attendance
     // ...existing code...
 }
+    
 ```

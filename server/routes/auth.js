@@ -3,19 +3,49 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const Database = require('../database');
 const { isDemoMode, getDemoUser } = require('../demo-data');
+const path = require('path');
+const fs = require('fs');
+const multer = require('multer');
+
+// Ensure uploads directory exists
+const uploadsDir = path.join(__dirname, '..', 'uploads', 'faces');
+fs.mkdirSync(uploadsDir, { recursive: true });
+
+// Configure multer storage
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadsDir);
+  },
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname) || '.jpg';
+    const name = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
+    cb(null, name);
+  }
+});
+
+const upload = multer({ storage });
+
 const router = express.Router();
 
 // Initialize database
 const db = new Database();
 
-// Register user
-router.post('/register', async (req, res) => {
+// Register user (accept optional profile image)
+router.post('/register', upload.single('profileImage'), async (req, res) => {
   try {
+    const body = req.body || {};
     const { 
       name, email, password, phone, role = 'student',
       student_id, department, year, section,
       admin_id, institution, position, employee_id
-    } = req.body;
+    } = body;
+
+    // If a file was uploaded, set profile_image path
+    let profile_image = null;
+    if (req.file) {
+      // store relative path used by static server
+      profile_image = path.join('uploads', 'faces', req.file.filename).replace(/\\/g, '/');
+    }
     
     // Demo mode - simulate registration
     if (isDemoMode()) {
@@ -66,7 +96,8 @@ router.post('/register', async (req, res) => {
       admin_id,
       institution,
       position,
-      employee_id
+      employee_id,
+      profile_image
     };
 
     const user = await db.createUser(userData);

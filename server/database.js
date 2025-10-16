@@ -29,6 +29,7 @@ class Database {
                 email TEXT UNIQUE NOT NULL,
                 password TEXT NOT NULL,
                 phone TEXT,
+                profile_image TEXT,
                 role TEXT NOT NULL CHECK(role IN ('student', 'admin', 'employee')),
                 student_id TEXT,
                 department TEXT,
@@ -98,6 +99,7 @@ class Database {
             const {
                 name, email, password, phone, role,
                 student_id, department, year, section,
+                profile_image,
                 admin_id, institution, position, employee_id
             } = userData;
 
@@ -108,7 +110,8 @@ class Database {
                 INSERT INTO users (
                     name, email, password, phone, role,
                     student_id, department, year, section,
-                    admin_id, institution, position, employee_id
+                    admin_id, institution, position, employee_id,
+                    profile_image
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `;
 
@@ -116,6 +119,7 @@ class Database {
                 name, email, hashedPassword, phone, role,
                 student_id, department, year, section,
                 admin_id, institution, position, employee_id
+                , profile_image
             ], function(err) {
                 if (err) {
                     reject(err);
